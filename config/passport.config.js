@@ -7,21 +7,38 @@ var Users = require('mongoose').model('User');
 // load the auth variables
 var configAuth = require('./auth.config.js');
 
-var Functions = require('./functions');
+var Functions = require('../Houger_module/functions');
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
+
+    // =========================================================================
+    // passport session setup ==================================================
+    // =========================================================================
+    // required for persistent login sessions
+    // passport needs ability to serialize and unserialize users out of session
+
+    // used to serialize the user for the session
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
+    });
+
+    // used to deserialize the user
+    passport.deserializeUser(function(id, done) {
+        Users.findById(id, function(err, user) {
+            done(err, user);
+        });
+    });
 
     // =========================================================================
     // LOCAL SIGNUP ============================================================
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
     passport.use('local-signup', new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
-            usernameField : 'fullName',
-            passwordField : 'nationalCode',
+            usernameField : 'email',
+            passwordField : 'password',
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, fullName, nationalCode, done) {
@@ -81,8 +98,6 @@ module.exports = function(passport) {
     // =========================================================================
     // we are using named strategies since we have one for login and one for signup
     // by default, if there was no name, it would just be called 'local'
-
-
     passport.use('local-login', new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
             usernameField : 'email',
@@ -92,13 +107,13 @@ module.exports = function(passport) {
         function(req, email, password, done) { // callback with email and password from our form
 
             if (Functions.isEmpty(email) || Functions.isEmpty(password)) {
-                return done(null, false, { message: 'لطفا همه موارد را وارد کنید' });
+                return done(null, false, { status: 501, message: 'لطفا همه موارد را وارد کنید' });
             }
 
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
             Users
-                .findOne({'local.email' :  email })
+                .findOne({'email' :  email })
                 .where('deleted', false)
                 .exec(function(err, user) {
                     // if there are any errors, return the error before anything else
@@ -108,74 +123,17 @@ module.exports = function(passport) {
 
                     // if no user is found, return the message
                     if (!user)
-                        return done(null, false, { message: 'ایمیل وارد شده نادرست است.' });
+                        return done(null, false, { status: 400, message: 'ایمیل یا کلمه عبور نادرست است' });
 
                     // if the user is found but the password is wrong
                     if (!user.authenticate(password))
-                        return done(null, false, { message:  'کلمه عبور نادرست است.'});
+                        return done(null, false, { status: 400, message:  'ایمیل یا کلمه عبور نادرست است'});
 
                     // all is well, return successful user
-                    return done(null, user, { message: 'خوش آمدید.'});
+                    return done(null, user, { status: 200, message: 'خوش آمدید.'});
                 });
 
 
         }));
-
-
-    // =========================================================================
-    // GOOGLE ==================================================================
-    // =========================================================================
-    passport.use(new GoogleStrategy({
-
-            clientID        : configAuth.googleAuth.clientID,
-            clientSecret    : configAuth.googleAuth.clientSecret,
-            callbackURL     : configAuth.googleAuth.callbackURL
-
-        },
-        function(token, refreshToken, profile, done) {
-
-            // make the code asynchronous
-            // User.findOne won't fire until we have all our data back from Google
-            process.nextTick(function() {
-
-                // try to find the user based on their google id
-                Users
-                    .findOne({ $or: [{'google.id' : profile.id }, {'local.email' : profile.emails[0].value}] })
-                    .where('deleted', false)
-                    .exec(function(err, user) {
-                        if (err)
-                            return done(err);
-
-                        if (user) {
-
-                            // if a user is found, log them in
-                            return done(null, user, { message: 'خوش آمدید' });
-                        } else {
-                            // if the user isnt in our database, create a new user
-                            var newUser          = new Users();
-
-                            // set all of the relevant information
-                            newUser.google.id    = profile.id;
-                            newUser.google.token = token;
-                            newUser.google.name  = profile.displayName;
-                            newUser.google.email = profile.emails[0].value; // pull the first email
-
-                            newUser.createProfile();
-
-                            // save the user
-                            newUser.save(function(err) {
-                                if (err)
-                                    done(err);
-                                process.nextTick(function () {
-                                    //Functions.sendWelcomeEmail(user);      //todo: send welcome email to new User
-                                });
-                                return done(null, newUser, { message: 'خوش آمدید' });
-                            });
-                        }
-                    });
-            });
-
-        }));
-
 
 };

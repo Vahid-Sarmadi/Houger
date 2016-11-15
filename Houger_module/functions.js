@@ -48,7 +48,7 @@ module.exports = {
     isAdmin: function(req, res, next) {
 
         // if user is authenticated in the session, carry on
-        if (req.isAuthenticated() && req.user.role == 'Admin') {
+        if (req.isAuthenticated() && req.user.role == 'Manager') {
             return next();
         }
 

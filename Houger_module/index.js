@@ -21,6 +21,13 @@ var Functions = require('./functions.js');
 module.exports = {
 
     Users           : require('./controllers/users.controller'),
+    Foods           : require('./controllers/foods.controller'),
+    Categories      : require('./controllers/categories.controller'),
+    Tables          : require('./controllers/tables.controller'),
+    Emails          : require('./controllers/emails.controller'),
+    phoneNumbers    : require('./controllers/phoneNumbers.controller'),
+    ReserveCodes    : require('./controllers/reserveCodes.controller'),
+    Reserves        : require('./controllers/reserves.controller'),
     Functions       : Functions,
     testConnection  : function (req, res, next) {
         res.json({

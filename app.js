@@ -17,7 +17,15 @@ require('./config/passport.config.js')(passport); // pass passport for configura
 /* routes */
 var Routes = {
   Admin: {
-    index: require('./routes/manager/index'),
+    index: require('./routes/admin/index'),
+    Users: require('./routes/admin/users.routes'),
+    Categories: require('./routes/admin/categories.routes'),
+    Foods: require('./routes/admin/foods.routes'),
+    Tables: require('./routes/admin/tables.routes'),
+    phoneNumbers: require('./routes/admin/phoneNumbers.routes'),
+    Reserves: require('./routes/admin/reserves.routes'),
+    ReserveCodes: require('./routes/admin/reserveCodes.routes'),
+    Emails: require('./routes/admin/emails.routes'),
   },
   Manager: {
     index: require('./routes/manager/index'),
@@ -30,6 +38,14 @@ var Routes = {
   },
   Api: {
     index: require('./routes/api/v1/index'),
+    Foods: require('./routes/api/v1/foods.routes'),
+    Categories: require('./routes/api/v1/categories.routes'),
+    Tables : require('./routes/api/v1/tables.routes'),
+    Emails : require('./routes/api/v1/emails.routes'),
+    phoneNumbers : require('./routes/api/v1/phoneNumbers.routes'),
+    ReserveCodes : require('./routes/api/v1/reserveCodes.routes'),
+    Reserves : require('./routes/api/v1/reserves.routes'),
+    Users : require('./routes/api/v1/users.routes'),
   }
 };
 
@@ -64,15 +80,31 @@ app.use('/', Routes.Customer.index);
 
 // Api -> routes
 app.use('/api', Routes.Api.index);
+app.use('/api/foods', Routes.Api.Foods);
+app.use('/api/categories', Routes.Api.Categories);
+app.use('/api/tables', Routes.Api.Tables);
+app.use('/api/emails', Routes.Api.Emails);
+app.use('/api/phoneNumbers', Routes.Api.phoneNumbers);
+app.use('/api/Reserves', Routes.Api.Reserves);
+app.use('/api/reserveCodes', Routes.Api.ReserveCodes);
+app.use('/api/users', Routes.Api.Users);
 
-// Editor -> routes
-app.use('/editor', Routes.Reception.index);
+// Reception -> routes
+app.use('/reception', Routes.Reception.index);
 
 // Manager -> routes
 app.use('/manager', Routes.Manager.index);
 
 // Admin -> routes
 app.use('/admin', Routes.Admin.index);
+app.use('/admin/users', Routes.Admin.Users);
+app.use('/admin/foods', Routes.Admin.Foods);
+app.use('/admin/categories', Routes.Admin.Categories);
+app.use('/admin/tables', Routes.Admin.Tables);
+app.use('/admin/phoneNumbers', Routes.Admin.phoneNumbers);
+app.use('/admin/Reserves', Routes.Admin.Reserves);
+app.use('/admin/reserveCodes', Routes.Admin.ReserveCodes);
+app.use('/admin/emails', Routes.Admin.Emails);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

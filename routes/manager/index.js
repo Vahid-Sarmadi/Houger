@@ -13,7 +13,7 @@ router.get('/', Houger.Functions.isManager,
 
         console.log(content);
 
-        res.render('manager/pages/index', content);
+        res.render('admin/pages/index', content);
     });
 
 
