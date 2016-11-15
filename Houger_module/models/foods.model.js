@@ -5,6 +5,7 @@ var Food = new mongoose.Schema({
     'name' : { type: String, require: true },
     'ingredients' : { type: String, require: true },
     'description' : { type: String, require: true },
+    'image' : { type: String, require: true },
     'price' : { type: String, require: true },
     'deleted' : { type: Boolean, default: false }
 });

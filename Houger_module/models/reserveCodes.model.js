@@ -5,6 +5,7 @@ var ReserveCode = new mongoose.Schema({
     'code' : { type: String, require: true },
     'expireTime' : { type: String, require: true },
     'voided' : { type: Boolean, default: false },
+    'canceled' : { type: Boolean, default: false },
     'deleted' : { type: Boolean, default: false }
 });
 

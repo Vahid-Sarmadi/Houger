@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var Table = new mongoose.Schema({
     'number' : { type: String, require: true, unique: true },
     'capacity' : { type: Number, require: true },
-    'images' : [{ type: String, require: true }],
+    'position' : { type: String, require: true },
+    'image' : { type: String, require: true },
     'description' : { type: String },
     'deleted' : { type: Boolean, default: false }
 });

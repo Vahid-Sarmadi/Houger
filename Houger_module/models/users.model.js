@@ -6,8 +6,10 @@ var User = new mongoose.Schema({
     'nationalCode' : { type: String, require: true },           //todo: ??? bashe ya nabashe
     'phoneNumber' : { type: String, require: true },
     'email' : { type: String, require: true },
+    '_password' : { type: String },
+    'image' : { type: String, require: true },
     'registrationDate' : { type: String, default: Math.floor(Date.now() / 1000) },
-    'role' : { type: String, enum:["Customer", "Reception", "Manager", "Admin"], default: "Customer" },
+    'role' : { type: String, enum:["Customer", "Reception", "Manager", "Admin"], default: "Customer"  },
     'deleted' : { type: Boolean, default: false }
 });
 
@@ -18,11 +20,11 @@ User.virtual('id')
 
 User.virtual('password')
     .set(function(password) {
-        this.local.password = this.encryptPassword(password);
+        this._password = this.encryptPassword(password);
     });
 
 User.method('authenticate', function(password) {
-    return bcrypt.compareSync(password, this.local.password);
+    return bcrypt.compareSync(password, this._password);
 });
 
 User.method('encryptPassword', function(password) {

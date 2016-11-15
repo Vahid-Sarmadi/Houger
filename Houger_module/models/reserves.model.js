@@ -8,7 +8,7 @@ var Reserve = new mongoose.Schema({
     'moreSeat' : { type: Number, default: 0 },
     'description' : { type: String, require: true },
     'registrationDate' : { type: String, default: Math.floor(Date.now() / 1000) },
-    'payed' : { type: Boolean, default: false },
+    'payed' : { type: Boolean, default: false},
     'deleted' : { type: Boolean, default: false }
 });
 
